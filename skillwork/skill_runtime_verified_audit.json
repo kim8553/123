@@ -1,0 +1,83 @@
+{
+  "status": "INVESTIGATION_REQUIRED",
+  "safe_to_patch": false,
+  "provenance": {
+    "resources/modern/share/skill/skill_new.ini": "4263a384d38b40f50289b4121949d6fb497a56f0b482e7560f478cb6929b8056",
+    "resources/modern/share/skill/skill_init.ini": "0d3dabcbe623874718195126cbf75492ad57b1b8e06ccd339cd01c081b0b",
+    "data/skills.json": "e1e8937cd23236cf71e446e6a9d3387390f30aeadbafe03e6948c6def99d1059",
+    "data/技能数据.json": "5711486a4e31a77573c6d0c3242d2824939b07867cade3afa3aea519d934e394"
+  },
+  "encoding_facts": {
+    "skill_init_strict_utf8": true,
+    "skill_new_strict_utf8": false
+  },
+  "shared_static_ids": 17855,
+  "matching_normalized_raw_ids": 17854,
+  "different_normalized_raw_ids": [5675],
+  "only_in_skill_new_static_ids": [],
+  "only_in_skill_init_static_ids": [],
+  "target_5675": {
+    "json_id": "ȭ",
+    "json_id_utf8_hex": "c8ad",
+    "skill_init": {
+      "raw_hex": "c8ad",
+      "display": "ȭ"
+    },
+    "skill_new": {
+      "raw_hex": "c1d1ccecc8ad",
+      "display": "裂天拳"
+    },
+    "json_matches_init_raw_key": true,
+    "json_matches_new_raw_key": false
+  },
+  "duplicate_init_sections": [
+    {
+      "static_data": 8240,
+      "config_id_ascii": "CS_jh_dgjj01",
+      "occurrences": 2,
+      "conflicting_fields": {
+        "itemtype": ["1000", "1001"],
+        "pausetime": ["30000", "50*1000.0/30"]
+      }
+    },
+    {
+      "static_data": 8249,
+      "config_id_ascii": "CS_jh_dgjj02",
+      "occurrences": 2,
+      "conflicting_fields": {}
+    },
+    {
+      "static_data": 8451,
+      "config_id_ascii": "CS_jh_dgjj03",
+      "occurrences": 2,
+      "conflicting_fields": {}
+    },
+    {
+      "static_data": 8453,
+      "config_id_ascii": "CS_jh_dgjj05",
+      "occurrences": 2,
+      "conflicting_fields": {}
+    },
+    {
+      "static_data": 8454,
+      "config_id_ascii": "CS_jh_dgjj06",
+      "occurrences": 2,
+      "conflicting_fields": {
+        "itemtype": ["1000", "1001"]
+      }
+    },
+    {
+      "static_data": 8456,
+      "config_id_ascii": "CS_jh_dgjj08",
+      "occurrences": 2,
+      "conflicting_fields": {}
+    }
+  ],
+  "duplicate_new_sections": [],
+  "duplicate_init_with_conflicting_fields": 2,
+  "warnings": [
+    "This models bytes and section parsing only, not actual server casting or client behavior.",
+    "The server EXE has not been patched; do not install the previously proposed JSON rename.",
+    "Duplicate-field interpretation is based on observed server loader disassembly, not a Windows gameplay test."
+  ]
+}

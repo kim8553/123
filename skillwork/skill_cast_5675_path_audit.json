@@ -1,0 +1,43 @@
+{
+  "status": "STATIC_CATALOG_KEY_MISMATCH_REQUIRES_RUNTIME_VALIDATION",
+  "exe_modified": false,
+  "safe_to_apply_previous_patch": false,
+  "resources": {
+    "static_data": 5675,
+    "json_config_id": "ȭ",
+    "json_utf8_hex": "c8ad",
+    "skill_new_raw_key_hex": "c1d1ccecc8ad",
+    "skill_init_raw_key_hex": "c8ad",
+    "json_equals_skill_init_key": true,
+    "json_equals_skill_new_key": false,
+    "json_key_occurrences_in_skill_new": 0,
+    "skill_new_script_ascii": "SkillNormal",
+    "skill_new_item_type_ascii": "1000",
+    "source_sha256": {
+      "resources/modern/share/skill/skill_new.ini": "4263a384d38b40f50289b4121949d6fb497a56f0b482e7560f478cb6929b8056",
+      "resources/modern/share/skill/skill_init.ini": "0d3dabcbe623874718195126cbf75492ad57b1b8e06ccd339cd01c081b0b6f0b",
+      "data/skills.json": "e1e8937cd23236cf71e446e6a9d3387390f30aeadbafe03e6948c6def99d1059",
+      "data/技能数据.json": "5711486a4e31a77573c6d0c3242d2824939b07867cade3afa3aea519d934e394"
+    }
+  },
+  "server_exe": {
+    "sha256": "c18538e2d32ff31c332b187d57af875d5fc226285ff4d96b46d8c61b4204639c",
+    "go_toolchain_verified_call_graph": {
+      "resource_loader": true,
+      "resource_loader_closure": true,
+      "catalog_builder": true,
+      "catalog_definition": true,
+      "cast_handler": true,
+      "init_view_loader": true,
+      "ini_parser": true
+    },
+    "cast_path_order": [
+      "learnedSkillLevel",
+      "combatSkillCatalog.definition",
+      "playerActor.beginSkillUse",
+      "stagePlayerSkillEffects"
+    ]
+  },
+  "interpretation": "The ordinary catalog is seeded from skill_new.ini keys. The JSON/init ID is not a skill_new.ini key for 5675. The normal cast handler consults learned levels then catalog.definition; runtime cast failure, alternate WuJi routing, official-client identity, and a safe repair are NOT proven.",
+  "next_validation": "Controlled Windows cast of this ID with isolated character data, then inspect catalog lookup and save identity before any binary or resource change."
+}

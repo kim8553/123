@@ -1,0 +1,25 @@
+{
+  "status": "EXPERIMENTAL_OFFLINE_CATALOG_KEY_CANDIDATE",
+  "deployable_or_tested_in_game": false,
+  "exe_modified": false,
+  "static_data": 5675,
+  "preserved_json_and_save_id": "ȭ",
+  "original_ini_sha256": "4263a384d38b40f50289b4121949d6fb497a56f0b482e7560f478cb6929b8056",
+  "candidate_ini_sha256": "652719c27441f46d9d06836147e80b4d6798e36597dacf77622785943a644b75",
+  "candidate_zip_sha256": "3c2435a0559f544a06b7f69277d0d85b900412329246d30cb07c411ead42ed1e",
+  "original_section_hex": "5bc1d1ccecc8ad5d",
+  "candidate_section_hex": "5bc8ad5d",
+  "changed_section_count": 1,
+  "skill_section_count": 17855,
+  "faculty_roles_with_existing_id": [
+    "2",
+    "3",
+    "4"
+  ],
+  "original_exe_sha256_required": "c18538e2d32ff31c332b187d57af875d5fc226285ff4d96b46d8c61b4204639c",
+  "limitations": [
+    "No real cast, cooldown, damage, login, save or client test.",
+    "Changing a resource section may break unobserved references.",
+    "Never combine with the withdrawn JSON ID replacement."
+  ]
+}
