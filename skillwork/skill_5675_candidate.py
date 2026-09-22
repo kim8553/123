@@ -2,7 +2,6 @@
 """Generate a reversible SKILL-ONLY LAB CANDIDATE. Never modifies the EXE or source archive."""
 import argparse
 import hashlib
-import io
 import json
 import zipfile
 from pathlib import Path
