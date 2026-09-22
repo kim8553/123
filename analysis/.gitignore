@@ -1,0 +1,14 @@
+# Never add raw game/client/server materials to this public repository.
+*.exe
+*.dll
+*.dmp
+*.package
+*.package.bin
+*.zip
+*.z01
+*.z02
+*.z03
+*.pcap
+*.pcapng
+*.key
+*.pem
