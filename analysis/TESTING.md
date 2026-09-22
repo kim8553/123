@@ -1,0 +1,1 @@
+Inventory comparison is not a runtime integration test. A successful patch requires an isolated Windows server launch, authorized client connection, packet capture comparison, skill state/damage/cooldown checks and rollback test.
