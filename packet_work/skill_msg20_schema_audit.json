@@ -1,0 +1,87 @@
+{
+  "scope": "SKILL_MESSAGES_20_AND_205_SCHEMA_ONLY",
+  "verdict": "STATIC_SENDER_SCHEMA_MATCHES_ONE_OFFICIAL_VARIANT_WIRE_PARITY_UNVERIFIED",
+  "official": {
+    "source_files": [
+      {
+        "origin": "artifacts/capture-players/out1/frames.log",
+        "sha256": "ca1da3ec2a85c0cd00a4ebce41c5f9bc1c63943194e1f15ea5c120c7c7eb2d61",
+        "id20_frames": 27,
+        "id20_tvar_counts": {"4": 1, "6": 22, "9": 4},
+        "id20_schemas": {
+          "int32,object8,string,object8": 1,
+          "int32,object8,string,object8,int32,float32": 22,
+          "int32,object8,string,object8,int32,float32,float32,float32,float32": 4
+        },
+        "id20_observed_three_arg_cast": 1,
+        "id20_unrecognized": 0,
+        "id20_distinct_skill_ids": 22,
+        "id205_frames": 44,
+        "id205_tvar_counts": {"4": 44},
+        "id205_schemas": {"int32,object8,string,object8": 44},
+        "unsupported_skill_frames": 0,
+        "invalid_frame_lengths": 0
+      },
+      {
+        "origin": "artifacts/capture-players/out2/frames.log",
+        "sha256": "b61659f2c331a0c0434124ee4f4714f98a92966a54fc1e9569c0299e7dc1a506",
+        "id20_frames": 1299,
+        "id20_tvar_counts": {"3": 2, "4": 27, "6": 1247, "9": 23},
+        "id20_schemas": {
+          "int32,object8,string": 2,
+          "int32,object8,string,object8": 27,
+          "int32,object8,string,object8,int32,float32": 1247,
+          "int32,object8,string,object8,int32,float32,float32,float32,float32": 23
+        },
+        "id20_observed_three_arg_cast": 27,
+        "id20_unrecognized": 0,
+        "id20_distinct_skill_ids": 197,
+        "id205_frames": 2139,
+        "id205_tvar_counts": {"4": 2104, "5": 24, "6": 7, "7": 4},
+        "id205_schemas": {
+          "int32,object8,string,object8": 2104,
+          "int32,object8,string,object8,object8": 24,
+          "int32,object8,string,object8,object8,object8": 7,
+          "int32,object8,string,object8,object8,object8,object8": 4
+        },
+        "unsupported_skill_frames": 0,
+        "invalid_frame_lengths": 0
+      }
+    ],
+    "msg20_total": 1326,
+    "msg20_count6_frames": 1269,
+    "msg20_count6_observed_types": ["int32", "object8", "string", "object8", "int32", "float32"],
+    "msg20_observed_tvar_counts": {"3": 2, "4": 28, "5": 0, "6": 1269, "7": 0, "8": 0, "9": 27},
+    "msg205_total": 2183,
+    "msg205_observed_tvar_counts": {"4": 2148, "5": 24, "6": 7, "7": 4}
+  },
+  "current_server_static_sender": {
+    "exe_sha256": "c18538e2d32ff31c332b187d57af875d5fc226285ff4d96b46d8c61b4204639c",
+    "sender_symbol": "main.nativeSkillActionFrameCaster",
+    "opcode": "0x1e",
+    "message_id": 20,
+    "extra_arguments_at_call": 5,
+    "wrapper_appends_message_id": 1,
+    "predicted_tvar_count_if_executed": 6,
+    "inferred_tvar_types_from_build_pinned_constructor_signatures": ["int32", "object8", "string", "object8", "int32", "float32"],
+    "disassembly_proof_addresses": ["0x917a48", "0x917a4d", "0x917a52", "0x917a5a", "0x917a62", "0x85706f", "0x857252", "0x8573e3"],
+    "count6_exists_in_official": true,
+    "inferred_type_sequence_matches_official_six_element_variant": true,
+    "sender_not_observed_on_wire": true
+  },
+  "current_server_existing_capture": {
+    "source": "artifacts/capture-localsrv/cap.pcapng",
+    "sha256": "c43457d8e96ef2b9c58873216a5365167f7a1467e398df3ef4820390fa75a5b6",
+    "tcp_segments": 2509,
+    "tcp_payload_segments": 0,
+    "tcp_payload_bytes": 0,
+    "outbound_skill_payload_available": false
+  },
+  "pairwise_byte_parity": "UNVERIFIED_NO_PAIRED_CURRENT_SERVER_OUTBOUND_PAYLOAD",
+  "not_proven": [
+    "Sender function actually executed for the same cast or same session",
+    "Actual transmitted server frame bytes and dynamic field values match official samples",
+    "Skill failure caused by a packet difference",
+    "Equality or inequality of all game packets"
+  ]
+}
