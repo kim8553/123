@@ -1,36 +1,43 @@
-# Skill-only investigation: `StaticData=5675`
+# Skill-only audit: `StaticData=5675` — PATCH BLOCKED
 
-Date: 2026-09-22. **EXE unchanged. No new combat skill implemented or verified.** This directory intentionally does not work on login, unrelated opcodes, networking or other gameplay features.
+Date: 2026-09-22. **Do not install the previously supplied `skill_id_5675_data_only_patch.zip`.** The earlier candidate JSON-only repair has been **withdrawn** after checking another skill resource. This branch contains no server EXE modification, no implemented combat skill, no save migration, and no Windows gameplay verification.
 
-## Grounded inputs
+## Newly verified conflict in the provided SERVER archive
 
-All counts below are from the user-supplied **server** archive (`九阴服务端-2026年9月21日更新.zip` nested inside the uploaded multipart archive), *not* a decoded official-client skill manifest. No original game binaries, full skill tables, character saves or login/session data are checked into this public repository.
+All evidence below is from the same uploaded server archive, **not** a decoded official-client manifest:
 
-- `data/skills.json`: roles `2` and `4`, each containing 17,633 distinct `config_id`s; their ID sets are equal.
-- `data/技能数据.json`: 17,466 distinct template IDs; 167 numeric IDs are in the role sets but absent from the template.
-- `resources/modern/share/skill/skill_new.ini`: 17,855 unique section IDs (decode section names with GB18030). Of these, 390 do not occur in the role set: 389 begin `wuji_`, and one is `裂天拳`. Conversely, 168 role IDs are not INI section names: 167 numeric IDs and `ȭ`.
-- Among 17,465 *exactly matching* resource/role section names, `StaticData` matches for all 17,465. For matching entries declaring `ItemType` (17,427 entries) or `PauseTime` (2,185 entries), those fields also match the role values. This is a consistency check of **server data only**.
+| Source | Observed entry for `StaticData=5675` |
+| --- | --- |
+| `data/skills.json` | `config_id = ȭ` (one row each in roles 2 and 4) |
+| `data/技能数据.json` | `config_id = ȭ` (one template row) |
+| `resources/modern/share/skill/skill_new.ini` | GB18030 section `[裂天拳]` |
+| `resources/modern/share/skill/skill_init.ini` | GB18030 section `[    拳]`, with **four literal ASCII spaces**, not an encoding display artifact |
+| `resources/modern/share/skill/skill_static.ini` | Numeric section `[5675]`, `TaoLu=clone011` |
 
-The `wuji_` count is **not** a list of missing skills to bulk-import. The compiled Go server exposes dedicated functions such as `main.loadWuJiCatalog`, `main.handleWuJiSubCommand`, `main.wujiVariantSkillFor`, `main.(*playerActor).pushWuJiSkillViews`, and `main.handleSkillCustom`. No runtime execution or successful WuJi cast has been proven by merely observing their symbols.
+The first two JSON rows declare `max_level=12`, whereas the `skill_init.ini` entry declares `maxlevel=1`; their different purposes and the executable's interpretation have **not** been established, so this alone is not called a bug. The two resource files' conflicting section names prevent selecting a safe replacement ID. `skill_static_to_id.ini` does not provide a section `[5675]` in this archive; the scope and completeness of that mapping are unknown.
 
-## One concrete ID mismatch
+Bytes for the two conflicting resource headers were directly checked: `skill_new.ini` contains `[\xc1\xd1\xcc\xec\xc8\xad]` (GB18030 `裂天拳`), and `skill_init.ini` contains `[    \xc8\xad]` (four spaces then `拳`). Both archive backups of these files contain the same respective names. The exact official-client ID and correct migration strategy remain **unknown**.
 
-Server resource `skill_new.ini` contains a **unique** section `[裂天拳]` with `StaticData=5675`; `skill_static.ini` also contains section `[5675]`. Both `data/skills.json` (once per role) and `data/技能数据.json` (once) instead store `{"config_id":"ȭ", "static_data":5675, ...}` and do not contain `裂天拳` as a `config_id`. This is a concrete **server-resource versus server-JSON** ID mismatch. Whether the official client uses this ID, and whether the Go server accepts a corrected cast, remain unverified.
+## Binary investigation, limited to skills
 
-`skill_id_repair.py` locates the resource section by the unique static ID and creates an **optional data-only patch ZIP** containing replacement copies of precisely the two JSON files; it edits only the three `config_id` string values, preserving other JSON bytes and skill progress fields. Run in audit-only mode without `--output`; the source archive is never overwritten. It refuses unexpected role structure, wrong static ID, ambiguous resource IDs, name collisions and unexpected JSON layout.
+The supplied Windows Go server binary exposes `main.loadCombatSkillCatalog` (`skill_catalog.go`, which calls `main.loadSkillResourceTables`), `main.loadSkillInitViews` (`skill_view.go`, which calls `main.loadINISections`), `main.(*playerActor).restoreSkillLevelsFromSave`, and `main.skillSaveApplyLevels`. These are real Go symbol/disassembly observations, **not** proof of a successful cast, a particular name lookup for 5675, or a safe binary patch.
+
+## Safety fix applied to the analysis tool
+
+`skill_id_repair.py` now cross-checks BOTH `skill_new.ini` and `skill_init.ini` by `StaticData=5675`. If either has zero/multiple sections, or their names differ, audit mode reports `BLOCKED_RESOURCE_CONFLICT`, returns nonzero exit code 2, and **refuses to create any output patch**. Patch mode also fails closed. `patch_one` remains a pure function used for synthetic tests only; it is not an authorization to deploy data changes. Missing `skill_init.ini` is rejected.
 
 ```bash
 python skillwork/skill_id_repair.py /path/to/nested_server.zip
-python skillwork/skill_id_repair.py /path/to/nested_server.zip --output /path/to/skill_data_patch.zip
+python skillwork/skill_id_repair.py /path/to/nested_server.zip --output /path/to/patch.zip  # BLOCKED for provided archive
 python -m unittest discover -s skillwork -p 'test_*.py' -v
 ```
 
-**Do not install the patch on a live server without backups, persisted-ID migration and an isolated Windows client/server test.** Old saved references to `ȭ` are not migrated. This patch does **not** modify the EXE, add a new skill handler, validate damage/cooldown/buff logic, or establish official-client parity. It is provided as a narrowly scoped candidate fix, not a deployable completed feature.
+The provided server archive returned `skill_new_ids=["裂天拳"]`, `skill_init_ids=["    拳"]`, status `BLOCKED_RESOURCE_CONFLICT`; no new ZIP was written. Nine synthetic unit tests passed in the sandbox. The originally uploaded archives, server EXE, character saves, and GitHub `main` were not edited. The previously generated ZIP remains an **unsafe candidate and must not be deployed**.
 
-## Provenance fingerprints
+## Original skill-data inventory (still valid)
 
-- Server EXE SHA-256: `c18538e2d32ff31c332b187d57af875d5fc226285ff4d96b46d8c61b4204639c`.
-- Original `data/skills.json` SHA-256: `e1e8937cd23236cf71e446e6a9d3387390f30aeadbafe03e6948c6def99d1059`; patched copy: `8c904792b019326544f4a962c48f02dec2bb58f8dcaa38df3df7653f71d4fe40`.
-- Original `data/技能数据.json` SHA-256: `5711486a4e31a77573c6d0c3242d2824939b07867cade3afa3aea519d934e394`; patched copy: `ccd7ef0a65740ca9a1f37292419c3670975858930cbaa6364dee3c5baeb99039`.
+The server's role lists contain 17,633 distinct skill IDs each and its template has 17,466. `skill_new.ini` has 17,855 unique sections; 389 `wuji_` entries absent from the general role JSON must **not** be designated missing skills without checking the dedicated `main.loadWuJiCatalog` / WuJi execution path. No official-client skill inventory or controlled Windows cast comparison was available.
 
-Next skill-only validation requires determining which `wuji_` variants go through the dedicated WuJi runtime path and obtaining a comparable official-client skill manifest or controlled cast observation. Do not synthesize a skill implementation based only on name-set differences.
+## Next skill-specific gate
+
+Obtain a verifiably decoded matching-version **client** skill identity for 5675 or controlled cast behavior, determine the server's 5675 lookup and persisted ID semantics, then design a coordinated multi-source + save-migration change. Do not normalize names, install the retired patch, inject server instructions, or bulk-import `wuji_` IDs on these observations alone.
