@@ -1,0 +1,21 @@
+{
+  "status": "BLOCKED_RESOURCE_CONFLICT",
+  "can_patch": false,
+  "static_data": 5675,
+  "json_config_id": "ȭ",
+  "skill_new_ids": [
+    "裂天拳"
+  ],
+  "skill_init_ids": [
+    "    拳"
+  ],
+  "reason": "Skill resources disagree or do not uniquely identify the same config_id; no safe replacement established.",
+  "files": {
+    "data/skills.json": {
+      "old_sha256": "e1e8937cd23236cf71e446e6a9d3387390f30aeadbafe03e6948c6def99d1059"
+    },
+    "data/技能数据.json": {
+      "old_sha256": "5711486a4e31a77573c6d0c3242d2824939b07867cade3afa3aea519d934e394"
+    }
+  }
+}
