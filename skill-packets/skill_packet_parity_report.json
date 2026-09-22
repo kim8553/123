@@ -1,0 +1,104 @@
+{
+  "scope": "SKILL_PACKET_EVIDENCE_ONLY",
+  "verdict": "FULL_PACKET_PARITY_NOT_VERIFIED",
+  "official_s2c_id205_schema": {
+    "outer_opcode": "0x1e",
+    "custom_message_id": 205,
+    "tvar_count": 4,
+    "argument_types": [
+      "object8",
+      "string",
+      "object8"
+    ],
+    "frame_length_rule": "32 + ASCII skill ID byte length (NUL-terminated wire string)"
+  },
+  "official_capture_summaries": [
+    {
+      "capture": "artifacts/capture-players/out2/frames.log",
+      "sha256": "b61659f2c331a0c0434124ee4f4714f98a92966a54fc1e9569c0299e7dc1a506",
+      "s2c_custom_frames": 9146,
+      "id205_frames": 2104,
+      "recognized_id205_frames": 2104,
+      "malformed_or_unrecognized_205_related": 0,
+      "unique_id205_skill_ids": 184
+    },
+    {
+      "capture": "artifacts/capture-fxgame-op2/decoded/frames.log",
+      "sha256": "fa95771938a2023d32e97cd05692dc7fd154cea5546b25670d27de614d6b6756",
+      "s2c_custom_frames": 801,
+      "id205_frames": 11,
+      "recognized_id205_frames": 11,
+      "malformed_or_unrecognized_205_related": 0,
+      "unique_id205_skill_ids": 6
+    }
+  ],
+  "current_server_log": {
+    "accepted_skill_events": 2162,
+    "accepted_unique_skill_ids": 258,
+    "client_customsend_211_events": 5019,
+    "client_customsend_211_opcodes": [
+      "0x0a"
+    ]
+  },
+  "cross_source_skill_id_overlap": {
+    "shared_distinct_skill_ids": 42,
+    "meaning": "A name overlap is not a paired cast, nor proof of packet compatibility."
+  },
+  "example_skill": {
+    "skill_id": "CS_jh_chz04",
+    "official": [
+      {
+        "capture": "artifacts/capture-players/out2/frames.log",
+        "official_id205_count": 126,
+        "official_id205_frame_lengths": [
+          43
+        ]
+      },
+      {
+        "capture": "artifacts/capture-fxgame-op2/decoded/frames.log",
+        "official_id205_count": 0,
+        "official_id205_frame_lengths": []
+      }
+    ],
+    "current_server_accepted_count": 42,
+    "current_server_decoded_client_211_count": 115,
+    "official_205_packet_schema_confirmed": true,
+    "current_server_205_wire_bytes_available": false
+  },
+  "local_pcap": {
+    "source": "artifacts/capture-localsrv/cap.pcapng",
+    "sha256": "c43457d8e96ef2b9c58873216a5365167f7a1467e398df3ef4820390fa75a5b6",
+    "tcp_segments": 2509,
+    "tcp_payload_segments": 0,
+    "tcp_payload_bytes": 0,
+    "can_compare_outbound_skill_frames": false
+  },
+  "comparisons": [
+    {
+      "claim": "Official S2C custom 205 structure",
+      "status": "CONFIRMED_IN_OFFICIAL_CAPTURE"
+    },
+    {
+      "claim": "Current server accepts some of the same skill IDs",
+      "status": "CONFIRMED_IN_PROCESS_LOG_ONLY"
+    },
+    {
+      "claim": "Official vs current server S2C 205 byte/field parity",
+      "status": "UNVERIFIED_NO_LOCAL_OUTBOUND_CAPTURE"
+    },
+    {
+      "claim": "Official vs current C2S 211 packet parity",
+      "status": "UNVERIFIED_NO_MATCHED_OFFICIAL_C2S_211_DECODE"
+    },
+    {
+      "claim": "All game packet parity",
+      "status": "UNVERIFIED_OUT_OF_SCOPE"
+    }
+  ],
+  "limitations": [
+    "Different capture sessions and characters; no paired, same-condition cast.",
+    "Server skill accept log does not show S2C 205 bytes or prove that a matching message was sent.",
+    "No official/client-to-server 211 field-level comparison established.",
+    "Server EXE and skill data were not modified; no live connection attempted."
+  ]
+}
