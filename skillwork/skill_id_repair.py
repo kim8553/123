@@ -14,6 +14,7 @@ from pathlib import Path
 
 TARGETS = {'data/skills.json': 2, 'data/技能数据.json': 1}
 INI = 'resources/modern/share/skill/skill_new.ini'
+INIT = 'resources/modern/share/skill/skill_init.ini'
 OLD = 'ȭ'
 STATIC = 5675
 
@@ -84,10 +85,27 @@ def run(source, output=None):
     with zipfile.ZipFile(source) as archive:
         inputs = {path: archive.read(find_entry(archive, path)) for path in TARGETS}
         names = sections_by_static_data(archive.read(find_entry(archive, INI)), STATIC)
+        init_names = sections_by_static_data(archive.read(find_entry(archive, INIT)), STATIC)
+    # A single matching StaticData in skill_new.ini is insufficient: the server
+    # separately loads skill_init.ini and may index skills by its section name.
+    # Never emit a candidate patch when either source is ambiguous or differs.
+    conflicted = len(names) != 1 or len(init_names) != 1 or names != init_names or names == [OLD]
+    if conflicted:
+        report = {
+            'status': 'BLOCKED_RESOURCE_CONFLICT', 'can_patch': False,
+            'static_data': STATIC, 'json_config_id': OLD,
+            'skill_new_ids': names, 'skill_init_ids': init_names,
+            'reason': 'Skill resources disagree or do not uniquely identify the same config_id; no safe replacement established.',
+            'files': {path: {'old_sha256': sha256(data)} for path, data in inputs.items()},
+        }
+        if output is not None:
+            raise ValueError('BLOCKED_RESOURCE_CONFLICT: skill_new.ini and skill_init.ini disagree; no patch created')
+        return report
     if len(names) != 1 or not names[0] or names[0] == OLD:
         raise ValueError(f'Expected a unique distinct resource name at StaticData={STATIC}, got {names!r}')
     result = {'status': 'AUDIT_ONLY' if output is None else 'DATA_PATCH_CREATED',
-              'old_config_id': OLD, 'resource_config_id': names[0], 'static_data': STATIC,
+              'can_patch': True, 'old_config_id': OLD, 'resource_config_id': names[0],
+              'skill_init_config_id': init_names[0], 'static_data': STATIC,
               'files': {}}
     changed = {}
     for path, data in inputs.items():
@@ -119,7 +137,10 @@ def main():
     parser.add_argument('server_zip', type=Path, help='Inner server ZIP, containing data/skills.json')
     parser.add_argument('--output', type=Path, help='Optional output ZIP; original server ZIP remains untouched')
     args = parser.parse_args()
-    print(json.dumps(run(args.server_zip, args.output), indent=2, ensure_ascii=False))
+    result = run(args.server_zip, args.output)
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    if not result['can_patch']:
+        raise SystemExit(2)
 
 
 if __name__ == '__main__':
