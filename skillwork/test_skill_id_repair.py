@@ -5,7 +5,7 @@ import unittest
 import zipfile
 from pathlib import Path
 
-from skill_id_repair import INI, OLD, STATIC, TARGETS, patch_one, run, sections_by_static_data
+from skill_id_repair import INI, INIT, OLD, STATIC, TARGETS, patch_one, run, sections_by_static_data
 
 
 class SkillIDRepairTest(unittest.TestCase):
@@ -19,11 +19,13 @@ class SkillIDRepairTest(unittest.TestCase):
         return {p: json.dumps(roles if p == 'data/skills.json' else template, ensure_ascii=False, indent=2).encode()
                 for p in TARGETS}
 
-    def archive(self, path, ini=b'[new_name]\nStaticData=5675\n[other]\nStaticData=100\n'):
+    def archive(self, path, ini=b'[new_name]\nStaticData=5675\n[other]\nStaticData=100\n',
+                init=b'[new_name]\nStaticData=5675\n'):
         with zipfile.ZipFile(path, 'w') as z:
             for name, data in self.inputs().items():
                 z.writestr('folder/' + name, data)
             z.writestr('folder/' + INI, ini)
+            z.writestr('folder/' + INIT, init)
 
     def test_exact_resource_name(self):
         self.assertEqual(sections_by_static_data('[裂天拳]\nStaticData=5675\n'.encode('gb18030'), 5675), ['裂天拳'])
@@ -68,7 +70,34 @@ class SkillIDRepairTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             original = Path(d) / 'server.zip'
             self.archive(original, b'[one]\nStaticData=5675\n[two]\nStaticData=5675\n')
-            with self.assertRaisesRegex(ValueError, 'unique distinct'):
+            report = run(original)
+            self.assertEqual(report['status'], 'BLOCKED_RESOURCE_CONFLICT')
+            self.assertFalse(report['can_patch'])
+
+    def test_disagreeing_resource_names_block_patch_without_output(self):
+        with tempfile.TemporaryDirectory() as d:
+            original = Path(d) / 'server.zip'; patch = Path(d) / 'patch.zip'
+            self.archive(original, ini='[裂天拳]\nStaticData=5675\n'.encode('gb18030'),
+                         init='[    拳]\nStaticData=5675\n'.encode('gb18030'))
+            before = original.read_bytes()
+            report = run(original)
+            self.assertEqual(report['status'], 'BLOCKED_RESOURCE_CONFLICT')
+            self.assertEqual(report['skill_new_ids'], ['裂天拳'])
+            self.assertEqual(report['skill_init_ids'], ['    拳'])
+            self.assertNotIn('patch_zip', report)
+            with self.assertRaisesRegex(ValueError, 'BLOCKED_RESOURCE_CONFLICT'):
+                run(original, patch)
+            self.assertFalse(patch.exists())
+            self.assertEqual(original.read_bytes(), before)
+
+    def test_missing_init_file_refuses_patch(self):
+        with tempfile.TemporaryDirectory() as d:
+            original = Path(d) / 'server.zip'
+            with zipfile.ZipFile(original, 'w') as z:
+                for name, data in self.inputs().items():
+                    z.writestr('folder/' + name, data)
+                z.writestr('folder/' + INI, b'[new_name]\nStaticData=5675\n')
+            with self.assertRaisesRegex(ValueError, 'Expected one'):
                 run(original)
 
 
